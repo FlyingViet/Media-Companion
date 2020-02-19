@@ -31,13 +31,19 @@ def display_playlist():
         sp = spotipy.Spotify(auth=token)
         list = sp.playlist(playlist_id, fields="tracks,next")
         song = list['tracks']
-        show_tracks(song)
+        #show_tracks(song)
+        searchTracks(token)
         while song['next']:
             song = sp.next(song)
-            show_tracks(song)
+            #show_tracks(song)
     else:
         print("Can't get token for", user)
 
+def searchTracks(token):
+    sp = spotipy.Spotify(auth=token)
+    track = 'intentions'
+    song = sp.search(q=track, type='track')
+    print(song)
 
 if __name__ == '__main__':
     display_playlist()
