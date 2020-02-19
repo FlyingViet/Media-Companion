@@ -2,6 +2,7 @@ import spotipy
 import spotipy.util as util
 import json
 
+
 def show_tracks(tracks):
     for i, item in enumerate(tracks['items']):
         track = item['track']
@@ -9,12 +10,15 @@ def show_tracks(tracks):
         song = track['name']
         print("%s - %s" % (artist, song))
 
+
 def show_songs(tracks):
+    songs = {}
     for i, item in enumerate(tracks['items']):
         song = item["name"]
         artist = item["artists"][0]["name"]
-        ext_url = item["external_urls"] #link to song
+        ext_url = item["external_urls"]  # link to song
         id = item["id"]
+        songs[song] = {"artist": artist, "url": ext_url, "id": id}
         print(f'{i}: ', song, "by", artist)
 
 
