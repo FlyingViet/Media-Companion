@@ -1,10 +1,21 @@
+
+body {
+  background-image: url("https://soundwave.com/img/hero11.jpg");
+}
+
+
 @media all and (min-width: 480px) {
+
     .Login {
       padding: 100px 0;
     }
+
   
     .Login form {
       margin: 0 auto;
       max-width: 320px;
+      font-weight: unset;
+      font-size: 20px;
+      color: white;
     }
   }

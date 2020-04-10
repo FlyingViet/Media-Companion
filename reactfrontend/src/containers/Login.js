@@ -18,7 +18,8 @@ export default function Login(props) {
     <div className="Login">
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email" bsSize="large">
-          <FormLabel>Email</FormLabel>
+          <h1>Media Companion</h1>
+          <FormLabel>Email                                                    </FormLabel>
           <FormControl
             autoFocus
             type="email"
