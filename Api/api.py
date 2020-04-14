@@ -26,7 +26,7 @@ class Database:
     def insert_user(self, email, password):
         self.cur.execute("INSERT INTO Users(email, password) VALUES(%s, %s)", (email, password))
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/api/', methods=['GET', 'POST'])
 def home():
     db = Database()
     if request.method == "POST":
@@ -36,8 +36,9 @@ def home():
         db.insert_user(email, password)
         db.con.commit()
         return 'Post Success'
-    else:
+    elif request.method == "GET":
         users = db.list_users()
+        print(users)
         return jsonify(users)
 
 

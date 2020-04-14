@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./Login.css";
+import Swal from 'sweetalert2'
+var _ = require('lodash');
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
@@ -14,9 +16,36 @@ export default function Login(props) {
     event.preventDefault();
   }
 
+  function onLogin(){
+    fetch('/api/', {
+      method: 'GET',
+    }).then((res) => {
+      return res.json();
+    }).then((json) => {
+      var user = _.find(json, {email: email, password: password});
+      console.log(user);
+      if(!_.isUndefined(user) && !_.isNull(user)){
+        Swal.fire({
+          title: 'Logged In',
+          text: 'Successfully got response',
+          confirmButtonText: 'OK'
+        });
+      }else{
+        Swal.fire({
+          title: 'Unable to log in',
+          text: 'Username/Password is incorrect',
+          confirmButtonText: 'OK'
+        })
+      }
+    }).catch((error) => {
+      console.log(error);
+    })
+
+  }
+  
   function onRegister() {
     var userInfo = {email: email, password: password};
-    fetch('http://127.0.0.1:5000/', {
+    fetch('/api/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -24,14 +53,19 @@ export default function Login(props) {
         "password": userInfo.password
       })
     }).then((res) => {
-      return res.json()
-    }).then((json) => {
-      console.log(json);
+      console.log(res);
+      Swal.fire({
+        title: 'Registered',
+        text: 'Successfully Registered',
+        confirmButtonText: 'OK'
+      });
+    }).catch((error) => {
+      console.log(error);
     });
   }
   return (
     <div className="Login">
-      <form onSubmit={handleSubmit} onRegister={onRegister}>
+      <form onSubmit={handleSubmit}>
         <FormGroup controlId="email" bsSize="large">
           <h1>Media Companion</h1>
           <FormLabel>Email                                                    </FormLabel>
@@ -50,7 +84,7 @@ export default function Login(props) {
             type="password"
           />
         </FormGroup>
-        <Button block bsSize="large" disabled={!validateForm()} type="submit">
+        <Button block bsSize="large" disabled={!validateForm()} type="login" onClick={onLogin}>
           Login
         </Button>
         <Button block bsSize="large" disabled={!validateForm()} type="register" onClick={onRegister}>

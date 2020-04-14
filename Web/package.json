@@ -1,19 +1,21 @@
 {
-  "name": "reactfrontend",
+  "name": "Web",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "lodash": "^4.17.15",
     "mysql": "^2.18.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "sweetalert2": "^9.10.12"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HOST=127.0.0.1 react-scripts start",
     "start-api": "cd ../Api && python api.py",
     "build": "react-scripts build",
     "test": "react-scripts test",
