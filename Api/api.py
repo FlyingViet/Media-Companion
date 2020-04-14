@@ -35,10 +35,9 @@ def home():
         password = payload['password']
         db.insert_user(email, password)
         db.con.commit()
-        return 'Post Success'
+        return jsonify(message='Post Success')
     elif request.method == "GET":
         users = db.list_users()
-        print(users)
         return jsonify(users)
 
 

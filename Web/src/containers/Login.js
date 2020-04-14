@@ -23,7 +23,6 @@ export default function Login(props) {
       return res.json();
     }).then((json) => {
       var user = _.find(json, {email: email, password: password});
-      console.log(user);
       if(!_.isUndefined(user) && !_.isNull(user)){
         Swal.fire({
           title: 'Logged In',
@@ -53,12 +52,20 @@ export default function Login(props) {
         "password": userInfo.password
       })
     }).then((res) => {
-      console.log(res);
-      Swal.fire({
-        title: 'Registered',
-        text: 'Successfully Registered',
-        confirmButtonText: 'OK'
-      });
+      if(res.status === 200){
+        Swal.fire({
+          title: 'Registered',
+          text: 'Successfully Registered',
+          confirmButtonText: 'OK'
+        });
+      }else if(res.status === 500){
+        Swal.fire({
+          title: 'Registration Failed',
+          text: 'Email is already in use',
+          confirmButtonText: 'OK'
+        });
+      }
+
     }).catch((error) => {
       console.log(error);
     });
