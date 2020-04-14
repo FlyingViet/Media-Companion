@@ -14,9 +14,24 @@ export default function Login(props) {
     event.preventDefault();
   }
 
+  function onRegister() {
+    var userInfo = {email: email, password: password};
+    fetch('http://127.0.0.1:5000/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        "email": userInfo.email,
+        "password": userInfo.password
+      })
+    }).then((res) => {
+      return res.json()
+    }).then((json) => {
+      console.log(json);
+    });
+  }
   return (
     <div className="Login">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onRegister={onRegister}>
         <FormGroup controlId="email" bsSize="large">
           <h1>Media Companion</h1>
           <FormLabel>Email                                                    </FormLabel>
@@ -37,6 +52,9 @@ export default function Login(props) {
         </FormGroup>
         <Button block bsSize="large" disabled={!validateForm()} type="submit">
           Login
+        </Button>
+        <Button block bsSize="large" disabled={!validateForm()} type="register" onClick={onRegister}>
+          Register
         </Button>
       </form>
     </div>

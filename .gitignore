@@ -4,3 +4,7 @@ Spotify/.cache-1214261898
 *.backup
 *.tfvars
 Terraform/.terraform/plugins/linux_amd64/terraform-provider-aws_v2.56.0_x4
+
+Api/config.json
+
+Web/src/containers/config.json
