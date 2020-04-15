@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 import pymysql
 import json
+import spotipy
+import spotipy.util as util
+import requests
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -8,6 +11,12 @@ CORS(app)
 
 f = open('config.json')
 data = json.load(f)
+
+f2 = open('secrets.json')
+secrets = json.load(f2)
+clientId = secrets['clientId']
+secret = secrets['secret']
+
 
 class Database:
     def __init__(self):
@@ -39,6 +48,58 @@ def home():
     elif request.method == "GET":
         users = db.list_users()
         return jsonify(users)
+
+@app.route('/api/Spotify/search/', methods=['GET'])
+def search():
+    token = spotify_authenticate(clientId, secret)
+    search_url = 'https://api.spotify.com/v1/search'
+    search_txt = request.headers.get('search_text','')
+    #search_txt = 'blinding lights'
+    if search_txt == '':
+        search_txt = request.args.get('search_text','')
+
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(token),
+    }
+    params = (
+        ('q', '{}*'.format(search_txt)),
+        ('type', 'track'),
+        ('limit', 10)
+    )
+
+    response = requests.get(search_url, headers=headers, params=params).json()
+    return jsonify(response)
+
+@app.route('/api/Spotify/playlist/', methods=['GET'])
+def playlist():
+    token = spotify_authenticate(clientId, secret)
+    playlist_url = 'https://api.spotify.com/v1/playlists/'
+    search_txt = request.headers.get('search_text','')
+    # search_txt = '3YvBd9gF9UtQER1vxbuGh5'
+    playlist_url += search_txt
+    if search_txt == '':
+        search_txt = request.args.get('search_text','')
+
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(token),
+    }
+    params = (
+        ('type', 'track'),
+        ('limit', 10)
+    )
+
+    response = requests.get(playlist_url, headers=headers, params=params).json()
+    return jsonify(response)
+
+def spotify_authenticate(spotify_client_id, spotify_client_secret):
+    data = {'grant_type': 'client_credentials'}
+    url = 'https://accounts.spotify.com/api/token'
+    response = requests.post(url, data=data, auth=(spotify_client_id, spotify_client_secret))
+    return response.json()['access_token']
 
 
 if __name__ == '__main__':
