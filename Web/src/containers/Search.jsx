@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _ from 'lodash';
 
-class Search extends Component {
+export default class Search extends Component {
     state = {
         searchValue: '',
         meals: [],
@@ -38,9 +38,11 @@ class Search extends Component {
     render() {
         return (
             <div>
-                <h1>Search for your song</h1>
-                <input name="text" type="text" placeholder="Search" onChange={e => this.handleOnChange(e)} />
-                <button onClick={this.handleSearch}>Search</button>
+                <center>
+                    <h1>Search for your song</h1>
+                    <input name="text" type="text" placeholder="Search" onChange={e => this.handleOnChange(e)} />
+                    <button onClick={this.handleSearch}>Search</button>
+                </center>
                 {this.state.jsonData ? (
                     <center>
                         <table>
@@ -65,4 +67,3 @@ class Search extends Component {
         )
     }
 }
-export default Search;
