@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./Login.css";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 var _ = require('lodash');
 
 export default function Login(props) {

@@ -49,11 +49,12 @@ def home():
         users = db.list_users()
         return jsonify(users)
 
-@app.route('/api/Spotify/search/', methods=['GET'])
+@app.route('/api/Spotify/search/', methods=['POST'])
 def search():
+    payload = request.get_json()
     token = spotify_authenticate(clientId, secret)
     search_url = 'https://api.spotify.com/v1/search'
-    search_txt = request.headers.get('search_text','')
+    search_txt = payload['search_text']
     #search_txt = 'blinding lights'
     if search_txt == '':
         search_txt = request.args.get('search_text','')
@@ -70,7 +71,9 @@ def search():
     )
 
     response = requests.get(search_url, headers=headers, params=params).json()
-    return jsonify(response)
+    songs = response['tracks']
+    song = show_songs(songs)
+    return jsonify(song)
 
 @app.route('/api/Spotify/playlist/', methods=['GET'])
 def playlist():
@@ -101,6 +104,16 @@ def spotify_authenticate(spotify_client_id, spotify_client_secret):
     response = requests.post(url, data=data, auth=(spotify_client_id, spotify_client_secret))
     return response.json()['access_token']
 
+def show_songs(tracks):
+    songs = {}
+    for i, item in enumerate(tracks['items']):
+        song = item["name"]
+        artist = item["artists"][0]["name"]
+        ext_url = item["external_urls"]
+        id = item["id"]
+        songs[i] = {"song": song, "artist": artist, "url": ext_url['spotify'], "id": id}
+    
+    return songs
 
 if __name__ == '__main__':
     app.run(debug=True)

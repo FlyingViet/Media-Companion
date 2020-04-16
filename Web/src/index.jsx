@@ -4,11 +4,8 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Login from './containers/Login';
 
-
 ReactDOM.render(
-  <React.StrictMode>
-    <Login/>
-  </React.StrictMode>,
+  <Login/>,
   document.getElementById('root')
 );
 
