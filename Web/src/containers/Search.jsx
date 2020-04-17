@@ -42,7 +42,7 @@ export default class Search extends Component {
                     <input name="text" type="text" placeholder="Search" onChange={e => this.handleOnChange(e)} />
                     <button onClick={this.handleSearch}>Search</button>
                 </center>
-                {this.state.jsonData ? (
+                {!_.isEmpty(this.state.jsonData) ? (
                     <center>
                         <table>
                         <tr>
@@ -60,7 +60,9 @@ export default class Search extends Component {
                     </table>
                     </center>
                 ) : (
-                    <p>Try searching for a different song</p>
+                    <center>
+                        <p>Try searching for a different song</p>
+                    </center>
                 )}
             </div>
         )
