@@ -8,7 +8,8 @@ export default class Login2 extends Component {
     state = {
         email: '',
         password: '',
-        user: {}
+        user: {},
+        loggedIn: false
     };
     changeEmail = event => {
         this.setState({email: event.target.value});
@@ -39,7 +40,8 @@ export default class Login2 extends Component {
                 text: 'Successfully got response',
                 confirmButtonText: 'OK'
               });
-              this.setState({user: user});
+              this.setState({user: user, loggedIn: true});
+              this.forceUpdate();
             }else{
               Swal.fire({
                 title: 'Unable to log in',
@@ -81,15 +83,10 @@ export default class Login2 extends Component {
         });
     }
 
-    componentDidUpdate(prevProps, prevState){
-        if( prevState.user !== this.state.user){
-            
-        }
-    }
     render() {
         return (
             <div>
-                {_.isUndefined(this.state.user) ? <Search/> : 
+                {(this.state.loggedIn) ? <Search/> : 
                 <LoginComponent 
                     changeEmail={this.changeEmail}
                     changePassword={this.changePassword}

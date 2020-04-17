@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./Login.css";
 import Swal from 'sweetalert2';
-import {Redirect} from 'react-router-dom';
-import Search from './Search';
 var _ = require('lodash');
 
 export default function Login(props) {
