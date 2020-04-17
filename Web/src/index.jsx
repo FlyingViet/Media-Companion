@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import Login from './containers/Login';
-import Search from './containers/Search';
 import Login2 from './containers/Login2';
 
 ReactDOM.render(

@@ -3,6 +3,8 @@ import _ from 'lodash';
 import Swal from 'sweetalert2';
 import Search from './Search';
 import LoginComponent from './LoginComponent';
+import Modal from 'react-modal';
+import "./Login.css";
 
 export default class Login2 extends Component {
     state = {
@@ -36,8 +38,8 @@ export default class Login2 extends Component {
             var user = _.find(json, {email: this.state.email, password: this.state.password});
             if(!_.isUndefined(user) && !_.isNull(user)){
               Swal.fire({
-                title: 'Logged In',
-                text: 'Successfully got response',
+                title: `Welcome ${user.email}`,
+                text: 'Successfully Logged In',
                 confirmButtonText: 'OK'
               });
               this.setState({user: user, loggedIn: true});
@@ -86,7 +88,12 @@ export default class Login2 extends Component {
     render() {
         return (
             <div>
-                {(this.state.loggedIn) ? <Search/> : 
+                {(this.state.loggedIn) ? 
+                <Modal
+                  isOpen={true}
+                >
+                  <Search/>
+                </Modal> : 
                 <LoginComponent 
                     changeEmail={this.changeEmail}
                     changePassword={this.changePassword}

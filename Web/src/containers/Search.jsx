@@ -54,7 +54,7 @@ export default class Search extends Component {
                             <tr>
                                 <td>{json.song}</td>
                                 <td>{json.artist}</td>
-                                <td><a href={json.url} target="_blank">Play on Spotify</a></td>
+                                <td><a href={json.url} target="webapp-tab" rel="noopener norefferer">Play on Spotify</a></td>
                             </tr>
                         ))}
                     </table>
