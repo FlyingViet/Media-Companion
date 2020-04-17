@@ -4,9 +4,10 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Login from './containers/Login';
 import Search from './containers/Search';
+import Login2 from './containers/Login2';
 
 ReactDOM.render(
-  <Search/>,
+  <Login2/>,
   document.getElementById('root')
 );
 

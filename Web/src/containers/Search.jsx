@@ -4,7 +4,6 @@ import _ from 'lodash';
 export default class Search extends Component {
     state = {
         searchValue: '',
-        meals: [],
         jsonData: []
     };
 
