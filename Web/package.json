@@ -19,7 +19,7 @@
     "sweetalert2": "^9.10.12"
   },
   "scripts": {
-    "start": "HOST=127.0.0.1 react-scripts start",
+    "start": "HOST=0.0.0.0  react-scripts start",
     "start-api": "cd ../Api && python api.py",
     "build": "react-scripts build",
     "test": "react-scripts test",

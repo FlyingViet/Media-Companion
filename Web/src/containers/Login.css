@@ -10,12 +10,36 @@ body {
       padding: 100px 0;
     }
 
-  
-    .Login form {
-      margin: 0 auto;
+    .Login input {
+      margin: 0 ;
       max-width: 320px;
       font-weight: unset;
       font-size: 20px;
-      color: white;
+      color: black;
+      display: inline-block;
+      text-align: center;
     }
+    .Login label {
+      margin: 0 ;
+      max-width: 320px;
+      font-weight: unset;
+      font-size: 20px;
+      color: black;
+      display: inline-block;
+      text-align: center;
+      width: 100px;
+    }
+
+    .Login h1 {
+      margin: 0 auto;
+      max-width: 320px;
+      color: black;
+    }
+
+    .Login button {
+      font-size: 16px;
+      padding: 5px 30px;
+      margin: 2px;
+    }
+    
   }

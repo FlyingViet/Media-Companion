@@ -87,7 +87,7 @@ export default class Login2 extends Component {
 
     render() {
         return (
-            <div>
+            <div className='Login'>
                 {(this.state.loggedIn) ? 
                 <Modal
                   isOpen={true}
