@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import _ from 'lodash';
+import ReactTable from 'react-table';
 import './Table.css';
+
+const columns = ['Song', 'Artist', 'Link to Spotify'];
 
 export default class Search extends Component {
     state = {
@@ -17,9 +20,9 @@ export default class Search extends Component {
             this.setState({jsonData: []});
         this.makeApiCall(this.state.searchValue);
     }
-
+    
     makeApiCall = searchInput => {
-        fetch('/api/Spotify/search/', {
+        fetch('/api/Spotify/playlist/', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -32,6 +35,7 @@ export default class Search extends Component {
             for(var i in json)
                 res.push(json[i]);
             this.setState({jsonData: res});
+            console.log(this.state.jsonData);
         });
     };
 
@@ -44,7 +48,7 @@ export default class Search extends Component {
         return (
             <div>
                 <center>
-                    <h1>Search for your song</h1>
+                    <h1>Enter a playlist id</h1>
                     <input name="text" type="text" placeholder="Search" onChange={e => this.handleOnChange(e)} onKeyPress={this.onKeyPress} />
                     <button type="submit" onClick={this.handleSearch}>Search</button>
                 </center>
@@ -72,7 +76,7 @@ export default class Search extends Component {
 
                 ) : (
                     <center>
-                        <p>Try searching for a different song</p>
+                        <p>Try searching for a different playlist</p>
                     </center>
                 )}
             </div>

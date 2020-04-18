@@ -5,6 +5,7 @@ import Search from './Search';
 import LoginComponent from './LoginComponent';
 import Modal from 'react-modal';
 import "./Login.css";
+import UserPage from './UserPage';
 
 export default class Login2 extends Component {
     state = {
@@ -34,7 +35,6 @@ export default class Login2 extends Component {
           }).then((res) => {
             return res.json();
           }).then((json) => {
-              console.log(json);
             var user = _.find(json, {email: this.state.email, password: this.state.password});
             if(!_.isUndefined(user) && !_.isNull(user)){
               Swal.fire({
@@ -89,11 +89,7 @@ export default class Login2 extends Component {
         return (
             <div className='Login'>
                 {(this.state.loggedIn) ? 
-                <Modal
-                  isOpen={true}
-                >
-                  <Search/>
-                </Modal> : 
+                <UserPage/> : 
                 <LoginComponent 
                     changeEmail={this.changeEmail}
                     changePassword={this.changePassword}

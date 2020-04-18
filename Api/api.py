@@ -75,12 +75,13 @@ def search():
     song = show_songs(songs)
     return jsonify(song)
 
-@app.route('/api/Spotify/playlist/', methods=['GET'])
+@app.route('/api/Spotify/playlist/', methods=['POST'])
 def playlist():
+    payload = request.get_json()
     token = spotify_authenticate(clientId, secret)
     playlist_url = 'https://api.spotify.com/v1/playlists/'
-    search_txt = request.headers.get('search_text','')
-    # search_txt = '3YvBd9gF9UtQER1vxbuGh5'
+    search_txt = payload['search_text']
+    #search_txt = '6SXzRD2I9kBN4iFQt4Rn4B'
     playlist_url += search_txt
     if search_txt == '':
         search_txt = request.args.get('search_text','')
@@ -92,11 +93,21 @@ def playlist():
     }
     params = (
         ('type', 'track'),
-        ('limit', 10)
+        ('limit', 100)
     )
-
+    
+    results = {}
+    i = 0
     response = requests.get(playlist_url, headers=headers, params=params).json()
-    return jsonify(response)
+    songs = response['tracks']
+    i = show_playlist(songs, results, i)
+    nextList = songs['next']
+    while nextList is not None:
+        response = requests.get(nextList, headers=headers, params=params).json()
+        songs = response['items']
+        i = show_playlist(response, results, i)
+        nextList = response['next']
+    return jsonify(results)
 
 def spotify_authenticate(spotify_client_id, spotify_client_secret):
     data = {'grant_type': 'client_credentials'}
@@ -114,6 +125,19 @@ def show_songs(tracks):
         songs[i] = {"song": song, "artist": artist, "url": ext_url['spotify'], "id": id}
     
     return songs
+
+def show_playlist(tracks, results, i):
+    songs = {}
+    for il, item in enumerate(tracks['items']):
+        it = item['track']
+        song = it['name']
+        artist = it['artists'][0]["name"]
+        ext_url = it["external_urls"]
+        id = it["id"]
+        songs[i] = {"song": song, "artist": artist, "url": ext_url['spotify'], "id": id}
+        i = i + 1
+    results.update(songs)
+    return i
 
 if __name__ == '__main__':
     app.run(debug=True)
