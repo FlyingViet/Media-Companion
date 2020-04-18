@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import _ from 'lodash';
 import Search from './Search';
 import Modal from 'react-modal';
 import Playlist from './Playlist';
+import Convert from './Convert';
 
 const customStyles = {
     content : {
@@ -11,7 +11,9 @@ const customStyles = {
       right                 : 'auto',
       bottom                : 'auto',
       marginRight           : '-50%',
-      transform             : 'translate(-50%, -50%)'
+      transform             : 'translate(-50%, -50%)',
+      width                 : '60%',
+      height                : '650px'
     }
   };
 
@@ -65,7 +67,21 @@ export default class Login2 extends Component {
                     ariaHideApp={false}
                 > 
                     <Playlist/>
-            </Modal>
+                </Modal>
+            )
+        }else if(this.state.convertOpen){
+            return (
+                <Modal
+                    isOpen={this.state.convertOpen}
+                    shouldCloseOnEsc={true}
+                    shouldCloseOnOverlayClick={true}
+                    onRequestClose={this.handleClose}
+                    contentLabel="Convert"
+                    style={customStyles}
+                    ariaHideApp={false}
+                > 
+                    <Convert/>
+                </Modal>
             )
         }
     }

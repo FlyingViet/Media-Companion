@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import _ from 'lodash';
-import ReactTable from 'react-table';
 import './Table.css';
-
-const columns = ['Song', 'Artist', 'Link to Spotify'];
 
 export default class Search extends Component {
     state = {
@@ -35,7 +32,6 @@ export default class Search extends Component {
             for(var i in json)
                 res.push(json[i]);
             this.setState({jsonData: res});
-            console.log(this.state.jsonData);
         });
     };
 

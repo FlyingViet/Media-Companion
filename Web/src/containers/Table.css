@@ -6,7 +6,38 @@
 
 .container {
     border: 1px solid #eeccee;
+    height: 500px;
     max-height: 500px;
     overflow-y: scroll;
     width: 100%;
 }
+
+.select {
+    width: 15%;
+    height: 30px;
+    display: inline-block;
+}
+
+.input {
+    margin: 0 ;
+    height: 30px;
+    width: 30%;
+    max-width: 320px;
+    font-weight: unset;
+    font-size: 20px;
+    color: black;
+    display: inline-block;
+    text-align: center;
+  }
+
+.button {
+    margin: 0 ;
+    max-width: 320px;
+    height: 30px;
+    font-weight: unset;
+    font-size: 20px;
+    color: black;
+    display: inline-block;
+    text-align: center;
+    width: 100px;
+  }

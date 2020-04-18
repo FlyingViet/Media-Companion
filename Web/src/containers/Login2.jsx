@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import _ from 'lodash';
 import Swal from 'sweetalert2';
-import Search from './Search';
 import LoginComponent from './LoginComponent';
-import Modal from 'react-modal';
 import "./Login.css";
 import UserPage from './UserPage';
 
