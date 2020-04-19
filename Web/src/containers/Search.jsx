@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import _ from 'lodash';
 import './Table.css';
+import Swal from 'sweetalert2';
 
 export default class Search extends Component {
     state = {
@@ -14,7 +15,16 @@ export default class Search extends Component {
 
     handleSearch = () => {
         if(_.isEmpty(this.state.searchValue))
+        {
             this.setState({jsonData: []});
+            Swal.fire({
+                title: 'Cannot Search',
+                text: 'Please enter a song name',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
         this.makeApiCall(this.state.searchValue);
     }
 
