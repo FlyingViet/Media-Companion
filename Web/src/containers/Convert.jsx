@@ -3,6 +3,7 @@ import './Table.css';
 import Select from 'react-select';
 import _ from 'lodash';
 import Swal from 'sweetalert2';
+import {getSpotifyPlaylist, getSpotifySong, getSongsDb} from './Common';
 
 export default class Search extends Component {
     state = {
@@ -45,76 +46,55 @@ export default class Search extends Component {
               return;
         }
         var searchInput = this.state.fromSelectedOption.value;
+        var result = [];
         switch(searchInput){
             case 'spotify':
-                await this.getSpotifyPlaylist(this.state.searchId);
+                result = await getSpotifyPlaylist(this.state.searchId);
                 break;
             case 'youtube':
+                result = await getSpotifyPlaylist(this.state.searchId);
                 //toCode
                 break;
             default:
                 console.log("Error, cannot get search from option");
         }
+        if(!_.isEmpty(result))
+            this.setState({fromJsonData: result});
         console.log(this.state.fromJsonData);
-        this.convertPlaylist();
+        await this.convertPlaylist();
         console.log(this.state.toJsonData);
     }
 
-    getSpotifyPlaylist = async() => {
-        await fetch('/api/Spotify/playlist/', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                "search_text": this.state.searchId
-            })
-        }).then((res) => {
-            return res.json();
-        }).then((json) => {
-            var res = [];
-            for(var i in json)
-                res.push(json[i]);
-            this.setState({fromJsonData: res});
-        });
-
-        return Promise.resolve(1);
-    };
-
-    searchSpotify = async searchInput => {
-        await fetch('/api/Spotify/search/', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                "search_text": searchInput
-            })
-        }).then((res) => {
-            return res.json();
-        }).then((json) => {
-            var res = [];
-            for(var i in json)
-                res.push(json[i]);
-            this.setState({searchResults: res});
-        });
-        return Promise.resolve(1);
-    };
-
-    convertPlaylist = () => {
+    convertPlaylist = async () => {
         var fromList = this.state.fromJsonData;
         var outList = [];
         var convertOutput = this.state.toSelectedOption.value;
+        var dbSongs = await getSongsDb();
         _.map(fromList, async (s) => {
-            var search = `${s.song} - ${s.artist}`;
-            switch(convertOutput){
-                case 'spotify':
-                    await this.searchSpotify(search);
-                    break;
-                case 'youtube':
-                    //toCode
-                    break;
-                default:
-                    console.log("Error, cannot get search from option");
-            }
-            if(!_.isEmpty(this.state.searchResults)){
-                outList.push(this.state.searchResults[0]);
+            var format = {SongName: s.song, SongArtist: s.artist};
+            if(_.some(dbSongs, format)){
+                var item = _.filter(dbSongs, format)[0];
+                var transform = {song: item.SongName, artist: item.SongArtist, url: item.SpotifyUrl, id: item.SpotifyID}
+                outList.push(transform);
+            }else{
+                var search = `${s.song} - ${s.artist}`;
+                /* TODO: Create and Insert a new Playlist */
+                var result = [];
+                switch(convertOutput){
+                    case 'spotify':
+                        result = await getSpotifySong(search);
+                        break;
+                    case 'youtube':
+                        //toCode
+                        result = await getSpotifySong(search);
+                        break;
+                    default:
+                        console.log("Error, cannot get search from option");
+                }
+                this.setState({searchResults: result});
+                if(!_.isEmpty(this.state.searchResults)){
+                    outList.push(this.state.searchResults[0]);
+                }
             }
         });
         this.setState({toJsonData: outList});

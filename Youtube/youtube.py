@@ -4,7 +4,7 @@ import google_auth_oauthlib.flow
 from flask import jsonify
 
 scopes = ['https://www.googleapis.com/auth/youtube']
-client_secrets_file = "secret/client_secret.json"
+client_secrets_file = "secrets/client_secret.json"
 
 # Get credentials and create an API client
 redirect_uri = "http://localhost"
@@ -117,8 +117,9 @@ playlistid = url[38:]
 #delete_video_user_playlist(pl_id=playlistid, v_name="Old Time Road")
 """
 
-"""
+
 search_song_title('Old Time Road')
+"""
 search_artist_name('Drake')
 all_user_playlist()
 search_user_playlist_name('Programming')

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import _ from 'lodash';
 import './Table.css';
 import Swal from 'sweetalert2';
+import {getSpotifyPlaylist} from './Common';
 
 export default class Search extends Component {
     state = {
@@ -13,7 +14,7 @@ export default class Search extends Component {
         this.setState({searchValue: event.target.value});
     }
 
-    handleSearch = () => {
+    handleSearch = async () => {
         if(_.isEmpty(this.state.searchValue)){
             this.setState({jsonData: []});
             Swal.fire({
@@ -23,25 +24,10 @@ export default class Search extends Component {
             });
             return;
         }
-        this.makeApiCall(this.state.searchValue);
-    }
-    
-    makeApiCall = searchInput => {
-        fetch('/api/Spotify/playlist/', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                "search_text": searchInput
-            })
-        }).then((res) => {
-            return res.json();
-        }).then((json) => {
-            var res = [];
-            for(var i in json)
-                res.push(json[i]);
+        var res = await getSpotifyPlaylist(this.state.searchValue);
+        if(!_.isEmpty(res))
             this.setState({jsonData: res});
-        });
-    };
+    }
 
     onKeyPress = (e) => {
         if(e.which === 13) {

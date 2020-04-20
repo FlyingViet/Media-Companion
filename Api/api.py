@@ -35,6 +35,16 @@ class Database:
     def insert_user(self, email, password):
         self.cur.execute("INSERT INTO Users(email, password) VALUES(%s, %s)", (email, password))
 
+    def insert_song(self, songName, songArtist, spotifyId, SpotifyUrl):
+        self.cur.execute("INSERT INTO Songs(SongName, SongArtist, SpotifyID, SpotifyUrl) VALUES( %s, %s, %s, %s)", (songName, songArtist, spotifyId, SpotifyUrl))
+
+    def get_songs(self):
+        self.cur.execute("SELECT SongId, SongName, SongArtist, SpotifyID, SpotifyUrl from Songs")
+        result = self.cur.fetchall()
+        return result
+
+
+####################### DATABASE ######################################
 @app.route('/api/', methods=['GET', 'POST'])
 def home():
     db = Database()
@@ -49,13 +59,29 @@ def home():
         users = db.list_users()
         return jsonify(users)
 
+@app.route('/api/Songs/', methods=['GET', 'POST'])
+def getSongs():
+    db = Database()
+    if request.method == "GET":
+        songs = db.get_songs()
+        return jsonify(songs)
+    elif request.method == "POST":
+        payload = request.get_json()
+        name = payload['name']
+        artist = payload['artist']
+        spotifyId = payload['spotifyId']
+        spotifyUrl = payload['spotifyUrl']
+        db.insert_song(name, artist, spotifyId, spotifyUrl)
+        db.con.commit()
+        return jsonify(name=name, artist=artist, spotifyId=spotifyId, spotifyUrl=spotifyUrl)
+
+####################### SPOTIFY ######################################
 @app.route('/api/Spotify/search/', methods=['POST'])
 def search():
     payload = request.get_json()
     token = spotify_authenticate(clientId, secret)
     search_url = 'https://api.spotify.com/v1/search'
     search_txt = payload['search_text']
-    #search_txt = 'blinding lights'
     if search_txt == '':
         search_txt = request.args.get('search_text','')
 
@@ -81,7 +107,6 @@ def playlist():
     token = spotify_authenticate(clientId, secret)
     playlist_url = 'https://api.spotify.com/v1/playlists/'
     search_txt = payload['search_text']
-    #search_txt = '6SXzRD2I9kBN4iFQt4Rn4B'
     playlist_url += search_txt
     if search_txt == '':
         search_txt = request.args.get('search_text','')
@@ -138,6 +163,9 @@ def show_playlist(tracks, results, i):
         i = i + 1
     results.update(songs)
     return i
+
+####################### YOUTUBE ######################################
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import _ from 'lodash';
 import './Table.css';
 import Swal from 'sweetalert2';
+import {getSpotifySong, getSongsDb, insertSong} from './Common';
 
 export default class Search extends Component {
     state = {
@@ -13,7 +14,7 @@ export default class Search extends Component {
         this.setState({searchValue: event.target.value});
     }
 
-    handleSearch = () => {
+    handleSearch = async () => {
         if(_.isEmpty(this.state.searchValue))
         {
             this.setState({jsonData: []});
@@ -25,25 +26,28 @@ export default class Search extends Component {
             return;
         }
 
-        this.makeApiCall(this.state.searchValue);
+        //await this.makeApiCall(this.state.searchValue);
+        var res = await getSpotifySong(this.state.searchValue);
+        if(!_.isEmpty(res))
+            this.setState({jsonData: res});
+        var item = await this.updateDb();
+        console.log(item);
     }
 
-    makeApiCall = searchInput => {
-        fetch('/api/Spotify/search/', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                "search_text": searchInput
-            })
-        }).then((res) => {
-            return res.json();
-        }).then((json) => {
-            var res = [];
-            for(var i in json)
-                res.push(json[i]);
-            this.setState({jsonData: res});
+    updateDb = async () => {
+        var res = await getSongsDb();
+        _.map(this.state.jsonData, async item => {
+            var format = {SongName: item.song, SongArtist: item.artist, SpotifyID: item.id, SpotifyUrl: item.url};
+            if(!_.some(res, format)){
+                console.log("does not exist");
+                var valid = await insertSong(item.song, item.artist, item.id, item.url);
+                console.log(valid);
+            }else{
+                console.log("exists");
+            }
         });
-    };
+        return res;
+    }
 
     onKeyPress = (e) => {
         if(e.which === 13) {
