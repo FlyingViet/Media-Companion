@@ -56,17 +56,7 @@ export default class Search extends Component {
                 console.log("Error, cannot get search from option");
         }
         console.log(this.state.fromJsonData);
-        var convertOutput = this.state.toSelectedOption.value;
-        switch(convertOutput){
-            case 'spotify':
-                this.convertToSpotifyPlaylist();
-                break;
-            case 'youtube':
-                //toCode
-                break;
-            default:
-                console.log("Error, cannot get search from option");
-        }
+        this.convertPlaylist();
         console.log(this.state.toJsonData);
     }
 
@@ -107,12 +97,22 @@ export default class Search extends Component {
         return Promise.resolve(1);
     };
 
-    convertToSpotifyPlaylist = () => {
+    convertPlaylist = () => {
         var fromList = this.state.fromJsonData;
         var outList = [];
+        var convertOutput = this.state.toSelectedOption.value;
         _.map(fromList, async (s) => {
             var search = `${s.song} - ${s.artist}`;
-            await this.searchSpotify(search);
+            switch(convertOutput){
+                case 'spotify':
+                    await this.searchSpotify(search);
+                    break;
+                case 'youtube':
+                    //toCode
+                    break;
+                default:
+                    console.log("Error, cannot get search from option");
+            }
             if(!_.isEmpty(this.state.searchResults)){
                 outList.push(this.state.searchResults[0]);
             }
