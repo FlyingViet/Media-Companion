@@ -33,6 +33,7 @@ export async function getSpotifySong(searchInput) {
             res.push(json[i]);
         jsonData = res;
     });
+    console.log(jsonData);
     return jsonData;
 };
 
@@ -51,7 +52,7 @@ export async function getSongsDb() {
     return jsonData;
 }
 
-export async function insertSong(song, artist, id, url){
+export async function insertSong(song, artist, id, url, uri){
     var jsonData = [];
     await fetch('/api/Songs/', {
         method: 'POST',
@@ -60,7 +61,8 @@ export async function insertSong(song, artist, id, url){
             "name": song,
             "artist": artist,
             "spotifyId": id,
-            "spotifyUrl": url
+            "spotifyUrl": url,
+            "spotifyUri": uri
         })
     }).then((res) => {
         return res.json();

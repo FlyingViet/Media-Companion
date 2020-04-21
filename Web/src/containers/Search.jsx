@@ -30,6 +30,7 @@ export default class Search extends Component {
         var res = await getSpotifySong(this.state.searchValue);
         if(!_.isEmpty(res))
             this.setState({jsonData: res});
+        console.log(this.state.jsonData);
         var item = await this.updateDb();
         console.log(item);
     }
@@ -37,10 +38,10 @@ export default class Search extends Component {
     updateDb = async () => {
         var res = await getSongsDb();
         _.map(this.state.jsonData, async item => {
-            var format = {SongName: item.song, SongArtist: item.artist, SpotifyID: item.id, SpotifyUrl: item.url};
+            var format = {SongName: item.song, SongArtist: item.artist, SpotifyID: item.id, SpotifyUrl: item.url, uri: item.uri};
             if(!_.some(res, format)){
                 console.log("does not exist");
-                var valid = await insertSong(item.song, item.artist, item.id, item.url);
+                var valid = await insertSong(item.song, item.artist, item.id, item.url, item.uri);
                 console.log(valid);
             }else{
                 console.log("exists");

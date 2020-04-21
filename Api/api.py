@@ -35,11 +35,11 @@ class Database:
     def insert_user(self, email, password):
         self.cur.execute("INSERT INTO Users(email, password) VALUES(%s, %s)", (email, password))
 
-    def insert_song(self, songName, songArtist, spotifyId, SpotifyUrl):
-        self.cur.execute("INSERT INTO Songs(SongName, SongArtist, SpotifyID, SpotifyUrl) VALUES( %s, %s, %s, %s)", (songName, songArtist, spotifyId, SpotifyUrl))
+    def insert_song(self, songName, songArtist, spotifyId, SpotifyUrl, uri):
+        self.cur.execute("INSERT INTO Songs(SongName, SongArtist, SpotifyID, SpotifyUrl, SpotifyUri) VALUES( %s, %s, %s, %s, %s)", (songName, songArtist, spotifyId, SpotifyUrl, uri))
 
     def get_songs(self):
-        self.cur.execute("SELECT SongId, SongName, SongArtist, SpotifyID, SpotifyUrl from Songs")
+        self.cur.execute("SELECT SongId, SongName, SongArtist, SpotifyID, SpotifyUrl, SpotifyUri from Songs")
         result = self.cur.fetchall()
         return result
 
@@ -71,9 +71,10 @@ def getSongs():
         artist = payload['artist']
         spotifyId = payload['spotifyId']
         spotifyUrl = payload['spotifyUrl']
-        db.insert_song(name, artist, spotifyId, spotifyUrl)
+        uri = payload['spotifyUri']
+        db.insert_song(name, artist, spotifyId, spotifyUrl, uri)
         db.con.commit()
-        return jsonify(name=name, artist=artist, spotifyId=spotifyId, spotifyUrl=spotifyUrl)
+        return jsonify(name=name, artist=artist, spotifyId=spotifyId, spotifyUrl=spotifyUrl, uri= uri)
 
 ####################### SPOTIFY ######################################
 @app.route('/api/Spotify/search/', methods=['POST'])
@@ -146,8 +147,9 @@ def show_songs(tracks):
         song = item["name"]
         artist = item["artists"][0]["name"]
         ext_url = item["external_urls"]
+        uri = item["uri"]
         id = item["id"]
-        songs[i] = {"song": song, "artist": artist, "url": ext_url['spotify'], "id": id}
+        songs[i] = {"song": song, "artist": artist, "url": ext_url['spotify'], "id": id, "uri": uri}
     
     return songs
 
@@ -159,7 +161,8 @@ def show_playlist(tracks, results, i):
         artist = it['artists'][0]["name"]
         ext_url = it["external_urls"]
         id = it["id"]
-        songs[i] = {"song": song, "artist": artist, "url": ext_url['spotify'], "id": id}
+        uri = it["uri"]
+        songs[i] = {"song": song, "artist": artist, "url": ext_url['spotify'], "id": id, "uri":uri}
         i = i + 1
     results.update(songs)
     return i
