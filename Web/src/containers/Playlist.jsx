@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import _ from 'lodash';
 import './Table.css';
 import Swal from 'sweetalert2';
-import {getSpotifyPlaylist} from './Common';
+import {getSpotifyPlaylist, insertPlaylist} from './Common';
 
 export default class Search extends Component {
     state = {
@@ -27,6 +27,7 @@ export default class Search extends Component {
         var res = await getSpotifyPlaylist(this.state.searchValue);
         if(!_.isEmpty(res))
             this.setState({jsonData: res});
+        await insertPlaylist(this.state.jsonData);
     }
 
     onKeyPress = (e) => {

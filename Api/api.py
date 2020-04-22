@@ -36,7 +36,10 @@ class Database:
         self.cur.execute("INSERT INTO Users(email, password) VALUES(%s, %s)", (email, password))
 
     def insert_song(self, songName, songArtist, spotifyId, SpotifyUrl, uri):
-        self.cur.execute("INSERT INTO Songs(SongName, SongArtist, SpotifyID, SpotifyUrl, SpotifyUri) VALUES( %s, %s, %s, %s, %s)", (songName, songArtist, spotifyId, SpotifyUrl, uri))
+        self.cur.execute("INSERT IGNORE INTO Songs(SongName, SongArtist, SpotifyID, SpotifyUrl, SpotifyUri) VALUES( %s, %s, %s, %s, %s)", (songName, songArtist, spotifyId, SpotifyUrl, uri))
+
+    def insert_multiple_songs(self, songList):
+        self.cur.executemany("""INSERT IGNORE INTO Songs(SongName, SongArtist, SpotifyID, SpotifyUrl, SpotifyUri) VALUES( %s, %s, %s, %s, %s)""", songList)
 
     def get_songs(self):
         self.cur.execute("SELECT SongId, SongName, SongArtist, SpotifyID, SpotifyUrl, SpotifyUri from Songs")
@@ -67,14 +70,32 @@ def getSongs():
         return jsonify(songs)
     elif request.method == "POST":
         payload = request.get_json()
-        name = payload['name']
-        artist = payload['artist']
-        spotifyId = payload['spotifyId']
-        spotifyUrl = payload['spotifyUrl']
-        uri = payload['spotifyUri']
-        db.insert_song(name, artist, spotifyId, spotifyUrl, uri)
+        data = payload['list']
+        playlist = []
+        for item in data:
+            name = item['song']
+            artist = item['artist']
+            spotifyId = item['id']
+            spotifyUrl = item['url']
+            uri = item['uri']
+            form = (name, artist, spotifyId, spotifyUrl, uri)
+            playlist.append(form)
+        db.insert_multiple_songs(playlist)
         db.con.commit()
-        return jsonify(name=name, artist=artist, spotifyId=spotifyId, spotifyUrl=spotifyUrl, uri= uri)
+        return jsonify(data)
+
+@app.route('/api/Song/', methods=['POST'])
+def insertSong():
+    db = Database()
+    payload = request.get_json()
+    name = payload['name']
+    artist = payload['artist']
+    spotifyId = payload['spotifyId']
+    spotifyUrl = payload['spotifyUrl']
+    uri = payload['spotifyUri']
+    db.insert_song(name, artist, spotifyId, spotifyUrl, uri)
+    db.con.commit()
+    return jsonify(name=name, artist=artist, spotifyId=spotifyId, spotifyUrl=spotifyUrl, uri= uri)
 
 ####################### SPOTIFY ######################################
 @app.route('/api/Spotify/search/', methods=['POST'])

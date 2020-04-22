@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export async function getSpotifyPlaylist( searchInput ){
     var jsonData = [];
     await fetch('/api/Spotify/playlist/', {
@@ -33,7 +35,6 @@ export async function getSpotifySong(searchInput) {
             res.push(json[i]);
         jsonData = res;
     });
-    console.log(jsonData);
     return jsonData;
 };
 
@@ -54,7 +55,7 @@ export async function getSongsDb() {
 
 export async function insertSong(song, artist, id, url, uri){
     var jsonData = [];
-    await fetch('/api/Songs/', {
+    await fetch('/api/Song/', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -67,8 +68,35 @@ export async function insertSong(song, artist, id, url, uri){
     }).then((res) => {
         return res.json();
     }).then((json) => {
-        console.log(json);
+        //console.log(json);
     });
     return jsonData;
 }
 
+export async function insertPlaylist(data){
+    await fetch('/api/Songs/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            list: data
+        })
+    }).then((res) => {
+        return res.json();
+    }).then((json) => {
+        //console.log(json);
+    });
+}
+export async function updateDb(searchData){
+    var res = await getSongsDb();
+    _.map(searchData, async item => {
+        var format = {SongName: item.song, SongArtist: item.artist};
+        if(!_.some(res, format)){
+            console.log("does not exist");
+            await insertSong(item.song, item.artist, item.id, item.url, item.uri);
+
+        }else{
+            console.log("exists");
+        }
+    });
+    return res;
+}

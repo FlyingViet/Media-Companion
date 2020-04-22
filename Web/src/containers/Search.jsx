@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import _ from 'lodash';
 import './Table.css';
 import Swal from 'sweetalert2';
-import {getSpotifySong, getSongsDb, insertSong} from './Common';
+import {getSpotifySong, updateDb} from './Common';
 
 export default class Search extends Component {
     state = {
@@ -15,8 +15,7 @@ export default class Search extends Component {
     }
 
     handleSearch = async () => {
-        if(_.isEmpty(this.state.searchValue))
-        {
+        if(_.isEmpty(this.state.searchValue)){
             this.setState({jsonData: []});
             Swal.fire({
                 title: 'Cannot Search',
@@ -26,28 +25,10 @@ export default class Search extends Component {
             return;
         }
 
-        //await this.makeApiCall(this.state.searchValue);
         var res = await getSpotifySong(this.state.searchValue);
         if(!_.isEmpty(res))
             this.setState({jsonData: res});
-        console.log(this.state.jsonData);
-        var item = await this.updateDb();
-        console.log(item);
-    }
-
-    updateDb = async () => {
-        var res = await getSongsDb();
-        _.map(this.state.jsonData, async item => {
-            var format = {SongName: item.song, SongArtist: item.artist, SpotifyID: item.id, SpotifyUrl: item.url, uri: item.uri};
-            if(!_.some(res, format)){
-                console.log("does not exist");
-                var valid = await insertSong(item.song, item.artist, item.id, item.url, item.uri);
-                console.log(valid);
-            }else{
-                console.log("exists");
-            }
-        });
-        return res;
+        await updateDb(this.state.jsonData);
     }
 
     onKeyPress = (e) => {
