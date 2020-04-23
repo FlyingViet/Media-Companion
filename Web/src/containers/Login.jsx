@@ -1,103 +1,101 @@
-import React, { useState } from "react";
-import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import "./Login.css";
+import React, { Component } from "react";
+import _ from 'lodash';
 import Swal from 'sweetalert2';
-var _ = require('lodash');
+import LoginComponent from './LoginComponent';
+import "./Login.css";
+import UserPage from './UserPage';
 
-export default function Login(props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default class Login2 extends Component {
+    state = {
+        email: '',
+        password: '',
+        user: {},
+        loggedIn: false
+    };
+    changeEmail = event => {
+        this.setState({email: event.target.value});
+    }
+    changePassword = event => {
+        this.setState({password: event.target.value});
+    }
 
-  function validateForm() {
-    return email.length > 0 && password.length > 0;
-  }
+    handleLogin = () => {
+        this.makeLoginCall();
+    }
 
-  function handleSubmit(event) {
-    event.preventDefault();
-  }
+    handleRegister = () => {
+        this.makeRegisterCall();
+    }
 
-  function onLogin(){
-    fetch('/api/', {
-      method: 'GET',
-    }).then((res) => {
-      return res.json();
-    }).then((json) => {
-      var user = _.find(json, {email: email, password: password});
-      if(!_.isUndefined(user) && !_.isNull(user)){
-        Swal.fire({
-          title: 'Logged In',
-          text: 'Successfully got response',
-          confirmButtonText: 'OK'
+    makeLoginCall = () => {
+        fetch('/api/', {
+            method: 'GET',
+          }).then((res) => {
+            return res.json();
+          }).then((json) => {
+            var user = _.find(json, {email: this.state.email, password: this.state.password});
+            if(!_.isUndefined(user) && !_.isNull(user)){
+              Swal.fire({
+                title: `Welcome ${user.email}`,
+                text: 'Successfully Logged In',
+                confirmButtonText: 'OK'
+              });
+              this.setState({user: user, loggedIn: true});
+              this.forceUpdate();
+            }else{
+              Swal.fire({
+                title: 'Unable to log in',
+                text: 'Username/Password is incorrect',
+                confirmButtonText: 'OK'
+              })
+            }
+          }).catch((error) => {
+            console.log(error);
+          })
+    }
+
+    makeRegisterCall = () => {
+        var userInfo = {email: this.state.email, password: this.state.password};
+        fetch('/api/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            "email": userInfo.email,
+            "password": userInfo.password
+          })
+        }).then((res) => {
+          if(res.status === 200){
+            Swal.fire({
+              title: 'Registered',
+              text: 'Successfully Registered',
+              confirmButtonText: 'OK'
+            });
+          }else if(res.status === 500){
+            Swal.fire({
+              title: 'Registration Failed',
+              text: 'Email is already in use',
+              confirmButtonText: 'OK'
+            });
+          }
+    
+        }).catch((error) => {
+          console.log(error);
         });
-      }else{
-        Swal.fire({
-          title: 'Unable to log in',
-          text: 'Username/Password is incorrect',
-          confirmButtonText: 'OK'
-        })
-      }
-    }).catch((error) => {
-      console.log(error);
-    })
+    }
 
-  }
-  
-  function onRegister() {
-    var userInfo = {email: email, password: password};
-    fetch('/api/', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        "email": userInfo.email,
-        "password": userInfo.password
-      })
-    }).then((res) => {
-      if(res.status === 200){
-        Swal.fire({
-          title: 'Registered',
-          text: 'Successfully Registered',
-          confirmButtonText: 'OK'
-        });
-      }else if(res.status === 500){
-        Swal.fire({
-          title: 'Registration Failed',
-          text: 'Email is already in use',
-          confirmButtonText: 'OK'
-        });
-      }
-
-    }).catch((error) => {
-      console.log(error);
-    });
-  }
-  return (
-    <div className="Login">
-      <form onSubmit={handleSubmit}>
-        <FormGroup controlId="email" bsSize="large">
-          <h1>Media Companion</h1>
-          <FormLabel>Email                                                    </FormLabel>
-          <FormControl
-            autoFocus
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup controlId="password" bsSize="large">
-          <FormLabel>Password</FormLabel>
-          <FormControl
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            type="password"
-          />
-        </FormGroup>
-        <Button block bsSize="large" disabled={!validateForm()} type="login" onClick={onLogin}>
-          Login
-        </Button>
-        <Button block bsSize="large" disabled={!validateForm()} type="register" onClick={onRegister}>
-          Register
-        </Button>
-      </form>
-    </div>
-  );
+    render() {
+        return (
+            <div className='Login'>
+                {(this.state.loggedIn) ? 
+                <UserPage/> : 
+                <LoginComponent 
+                    changeEmail={this.changeEmail}
+                    changePassword={this.changePassword}
+                    handleLogin={this.handleLogin}
+                    handleRegister={this.handleRegister}
+                    />}
+                
+            </div>
+        )
+    }
 }

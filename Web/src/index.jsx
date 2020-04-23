@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import Login2 from './containers/Login2';
+import Login from './containers/Login';
 
 ReactDOM.render(
-  <Login2/>,
+  <Login/>,
   document.getElementById('root')
 );
 
