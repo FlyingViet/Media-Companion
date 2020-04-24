@@ -7,7 +7,8 @@ import {getSpotifyPlaylist, insertPlaylist} from './Common';
 export default class Search extends Component {
     state = {
         searchValue: '',
-        jsonData: []
+        jsonData: [],
+        playlistName: ''
     };
 
     handleOnChange = event => {
@@ -26,7 +27,9 @@ export default class Search extends Component {
         }
         var res = await getSpotifyPlaylist(this.state.searchValue);
         if(!_.isEmpty(res))
-            this.setState({jsonData: res});
+            var playlistName = res[0].name;
+            res = res.slice(1);
+            this.setState({jsonData: res, playlistName: playlistName});
         await insertPlaylist(this.state.jsonData);
     }
 
@@ -45,6 +48,7 @@ export default class Search extends Component {
                 </center>
                 {!_.isEmpty(this.state.jsonData) ? (
                     <div className="container">
+                        <center><h2>{this.state.playlistName}</h2></center>
                         <center>
                             <table>
                                 <thead>

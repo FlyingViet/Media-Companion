@@ -12,8 +12,10 @@ export async function getSpotifyPlaylist( searchInput ){
         return res.json();
     }).then((json) => {
         var res = [];
-        for(var i in json)
-            res.push(json[i]);
+        var js = json[1];
+        res.push({name: json[0]})
+        for(var i in js)
+            res.push(js[i]);
         jsonData = res;
     });
     return jsonData;

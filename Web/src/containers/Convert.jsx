@@ -17,7 +17,8 @@ export default class Search extends Component {
         searchId: null,
         fromJsonData: [],
         toJsonData: [],
-        searchResults: []
+        searchResults: [],
+        playlistName: ''
     };
 
     handleOnChange = event => {
@@ -59,7 +60,9 @@ export default class Search extends Component {
                 console.log("Error, cannot get search from option");
         }
         if(!_.isEmpty(result))
-            this.setState({fromJsonData: result});
+            var playlistName = result[0].name;
+            result = result.splice(1);
+            this.setState({fromJsonData: result, playlistName: playlistName});
         console.log(this.state.fromJsonData);
         await this.convertPlaylist();
         console.log(this.state.toJsonData);

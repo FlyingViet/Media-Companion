@@ -129,6 +129,7 @@ def playlist():
     token = spotify_authenticate(clientId, secret)
     playlist_url = 'https://api.spotify.com/v1/playlists/'
     search_txt = payload['search_text']
+    # search_txt = '37i9dQZF1DXcBWIGoYBM5M'
     playlist_url += search_txt
     if search_txt == '':
         search_txt = request.args.get('search_text','')
@@ -146,6 +147,7 @@ def playlist():
     results = {}
     i = 0
     response = requests.get(playlist_url, headers=headers, params=params).json()
+    playlistName = response['name']
     songs = response['tracks']
     i = show_playlist(songs, results, i)
     nextList = songs['next']
@@ -154,7 +156,7 @@ def playlist():
         songs = response['items']
         i = show_playlist(response, results, i)
         nextList = response['next']
-    return jsonify(results)
+    return jsonify(playlistName, results)
 
 def spotify_authenticate(spotify_client_id, spotify_client_secret):
     data = {'grant_type': 'client_credentials'}
