@@ -10,6 +10,7 @@ variable "cidr_subnet2" {}
 variable "dbusername" {}
 variable "dbpassword" {}
 variable "projectname" {}
+variable "key_name" {}
 variable "az_1" {
   default     = "us-east-1b"
   description = "Your Az1, use AWS CLI to find your account specific"
@@ -80,9 +81,26 @@ resource "aws_db_instance" "mediadb" {
   multi_az = false
   max_allocated_storage = 100
   skip_final_snapshot = true
+  publicly_accessible = true
 
   tags = {
     Name = "${var.projectname}-dbinstance"
+    Environment = "${var.projectname}"
+  }
+}
+
+resource "aws_eip" "mediaip" {
+  instance = "${aws_instance.mediaec2.id}"
+  vpc = true
+}
+
+resource "aws_instance" "mediaec2" {
+  ami = "ami-068663a3c619dd892"
+  instance_type = "t2.micro"
+  key_name = "${var.key_name}"
+
+  tags = {
+    Name = "${var.projectname}-ec2_instance"
     Environment = "${var.projectname}"
   }
 }

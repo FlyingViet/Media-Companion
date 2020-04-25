@@ -21,7 +21,8 @@ export default class Login2 extends Component {
     state = {
         searchOpen: false,
         convertOpen: false,
-        playlistOpen: false
+        playlistOpen: false,
+        connected: false
     };
 
     handleSearch = () => {
@@ -40,6 +41,10 @@ export default class Login2 extends Component {
         this.setState({searchOpen: false, convertOpen: false, playlistOpen: false});
     }
 
+    connectToYoutube = () => {
+        //TODO: add function call to authenticate
+        this.setState({connected: true});
+    }
     createComponent = () => {
         if(this.state.searchOpen){
             return (
@@ -94,6 +99,7 @@ export default class Login2 extends Component {
                 <button onClick={this.handleSearch}>Search</button>
                 <button onClick={this.handlePlaylist}>Playlist</button>
                 <button onClick={this.handleConvert}>Convert Playlist</button>
+                <button onClick={this.connectToYoutube}>Connect to Youtube</button>
                 {this.createComponent()}
             </center>
         )
