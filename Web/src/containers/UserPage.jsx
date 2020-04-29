@@ -3,6 +3,7 @@ import Search from './Search';
 import Modal from 'react-modal';
 import Playlist from './Playlist';
 import Convert from './Convert';
+import {ytAuth} from './Common';
 
 const customStyles = {
     content : {
@@ -22,7 +23,8 @@ export default class Login2 extends Component {
         searchOpen: false,
         convertOpen: false,
         playlistOpen: false,
-        connected: false
+        connected: false,
+        youtubeOpen: false
     };
 
     handleSearch = () => {
@@ -38,7 +40,11 @@ export default class Login2 extends Component {
     }
 
     handleClose = () => {
-        this.setState({searchOpen: false, convertOpen: false, playlistOpen: false});
+        this.setState({searchOpen: false, convertOpen: false, playlistOpen: false, youtubeOpen: false});
+    }
+
+    handleYoutube = () => {
+        this.setState({youtubeOpen: true});
     }
 
     connectToYoutube = () => {
@@ -88,6 +94,8 @@ export default class Login2 extends Component {
                     <Convert/>
                 </Modal>
             )
+        }else if(this.state.youtubeOpen){
+            ytAuth(this.props.user.id);
         }
     }
 
@@ -99,7 +107,7 @@ export default class Login2 extends Component {
                 <button onClick={this.handleSearch}>Search</button>
                 <button onClick={this.handlePlaylist}>Playlist</button>
                 <button onClick={this.handleConvert}>Convert Playlist</button>
-                <button onClick={this.connectToYoutube}>Connect to Youtube</button>
+                <button onClick={this.handleYoutube}>Connect to Youtube</button>
                 {this.createComponent()}
             </center>
         )

@@ -5,6 +5,7 @@ import spotipy
 import spotipy.util as util
 import requests
 from flask_cors import CORS
+import yt
 
 app = Flask(__name__)
 CORS(app)
@@ -17,6 +18,7 @@ secrets = json.load(f2)
 clientId = secrets['clientId']
 secret = secrets['secret']
 
+youtube = None
 
 class Database:
     def __init__(self):
@@ -43,6 +45,14 @@ class Database:
 
     def get_songs(self):
         self.cur.execute("SELECT SongId, SongName, SongArtist, SpotifyID, SpotifyUrl, SpotifyUri from Songs")
+        result = self.cur.fetchall()
+        return result
+
+    def set_auth(self, userId):
+        self.cur.execute("update Users set ytAuth=1 where id=%s", userId)
+
+    def get_user(self, userId):
+        self.cur.execute("select id, email, password, ytAuth from Users where id=%s", userId)
         result = self.cur.fetchall()
         return result
 
@@ -191,10 +201,18 @@ def show_playlist(tracks, results, i):
     return i
 
 ####################### YOUTUBE ######################################
-@app.route('/api/Youtube/Auth/', methods=['GET'])
-def ytSearch():
-    return jsonify({"test": "test"})
-
+@app.route('/api/Youtube/Auth/', methods=['POST'])
+def ytAuth():
+    global youtube
+    db = Database()
+    payload = request.get_json()
+    userId = payload['id']
+    # userId = 1
+    youtube = yt.auth(userId)
+    if youtube is not None:
+        db.set_auth(userId)
+    auth = db.get_user(userId)
+    return jsonify(auth)
 
 
 if __name__ == '__main__':

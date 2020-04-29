@@ -102,3 +102,17 @@ export async function updateDb(searchData){
     });
     return res;
 }
+
+export async function ytAuth(id){
+    await fetch('/api/Youtube/Auth/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            id: id
+        })
+    }).then((res) => {
+        return res.json();
+    }).then((json) => {
+        console.log(json);
+    });
+}

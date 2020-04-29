@@ -94,7 +94,9 @@ export default class Login2 extends Component {
         return (
             <div className='Login'>
                 {(this.state.loggedIn) ? 
-                <UserPage/> : 
+                <UserPage
+                  user={this.state.user}
+                /> : 
                 <LoginComponent 
                     changeEmail={this.changeEmail}
                     changePassword={this.changePassword}
