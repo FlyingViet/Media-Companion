@@ -12,3 +12,5 @@ Web/src/containers/config.json
 Api/secrets.json
 
 Youtube/secrets/client_secret.json
+
+*.pickle

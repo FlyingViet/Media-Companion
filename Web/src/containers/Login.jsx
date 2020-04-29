@@ -13,18 +13,25 @@ export default class Login2 extends Component {
         loggedIn: false
     };
     changeEmail = event => {
-        this.setState({email: event.target.value});
+      this.setState({email: event.target.value});
     }
     changePassword = event => {
-        this.setState({password: event.target.value});
+      this.setState({password: event.target.value});
     }
 
     handleLogin = () => {
-        this.makeLoginCall();
+      this.makeLoginCall();
     }
 
     handleRegister = () => {
-        this.makeRegisterCall();
+      if(_.isEmpty(this.state.email) || _.isEmpty(this.state.password)){
+        Swal.fire({
+          title: `Email or Password is empty`,
+          text: 'Please try again',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.makeRegisterCall();
     }
 
     makeLoginCall = () => {
