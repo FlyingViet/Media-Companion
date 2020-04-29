@@ -191,7 +191,7 @@ def show_playlist(tracks, results, i):
     return i
 
 ####################### YOUTUBE ######################################
-@app.route('/api/Youtube/', methods=['GET'])
+@app.route('/api/Youtube/Auth/', methods=['GET'])
 def ytSearch():
     return jsonify({"test": "test"})
 
