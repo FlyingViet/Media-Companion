@@ -11,6 +11,19 @@ Web/src/containers/config.json
 
 Api/secrets.json
 
+<<<<<<< Updated upstream
 Youtube/secrets/client_secret.json
+<<<<<<< Updated upstream
 
 *.pickle
+=======
+=======
+Api/.DS_Store
+
+.DS_Store
+
+Youtube/secret/client_secret.json
+>>>>>>> Stashed changes
+
+.idea/
+>>>>>>> Stashed changes

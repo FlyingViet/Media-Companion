@@ -1,18 +1,33 @@
-import os
+import os.path
 from googleapiclient.discovery import build
-import google_auth_oauthlib.flow
-from flask import jsonify
+from google_auth_oauthlib.flow import InstalledAppFlow
+import pickle
+from google.auth.transport.requests import Request
 
-scopes = ['https://www.googleapis.com/auth/youtube']
+SCOPES = ['https://www.googleapis.com/auth/youtube']
 client_secrets_file = "secrets/client_secret.json"
 
-# Get credentials and create an API client
-redirect_uri = "http://localhost"
-flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(client_secrets_file, scopes)
-credentials = flow.run_console()
-youtube = build('youtube', 'v3', credentials=credentials)
 
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+creds = None
+
+# The file token.pickle stores the user's access and refresh tokens, and is
+# created automatically when the authorization flow completes for the first
+# time.
+if os.path.exists('token.pickle'):
+    with open('token.pickle', 'rb') as token:
+        creds = pickle.load(token)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(client_secrets_file, SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+
+    youtube = build('youtube', 'v3', credentials=creds)
 
 
 def search_song_title(name: str):
@@ -103,6 +118,7 @@ def delete_video_user_playlist(pl_id: str, v_name: str):
     print(delete_exe)
 
 
+
 """
 # Create Playlist
 create_user_playlist("Test Playlist")
@@ -116,7 +132,6 @@ playlistid = url[38:]
 #insert_video_user_playlist(pl_id=playlistid, v_name="Old Town Road")
 #delete_video_user_playlist(pl_id=playlistid, v_name="Old Town Road")
 """
-
 
 search_song_title('Old Time Road')
 """
