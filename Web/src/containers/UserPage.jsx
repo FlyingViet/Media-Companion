@@ -23,7 +23,6 @@ export default class Login2 extends Component {
         searchOpen: false,
         convertOpen: false,
         playlistOpen: false,
-        connected: false,
         youtubeOpen: false
     };
 
