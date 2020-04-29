@@ -207,7 +207,6 @@ def ytAuth():
     db = Database()
     payload = request.get_json()
     userId = payload['id']
-    # userId = 1
     youtube = yt.auth(userId)
     if youtube is not None:
         db.set_auth(userId)
