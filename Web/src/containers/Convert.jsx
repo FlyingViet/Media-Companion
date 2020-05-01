@@ -58,7 +58,6 @@ export default class Search extends Component {
         switch(searchInput){
             case 'spotify':
                 result = await getSpotifyPlaylist(this.state.searchId);
-                await delay(5000);
                 break;
             case 'youtube':
                 //toCode
@@ -133,6 +132,7 @@ export default class Search extends Component {
                     case 'youtube':
                         console.log(playlistId);
                         var songTitle = await this.insertYtSong(playlistId, search, this.state.userId);
+                        await delay(5000);
                         //await this.insertYtSong("testId", search, this.state.userId);
                         console.log(songTitle);
                         break;

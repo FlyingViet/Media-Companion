@@ -1,6 +1,7 @@
 from __future__ import print_function
 import pickle
 import os.path
+from flask import Flask, redirect
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -26,6 +27,8 @@ def auth(userId):
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 'secrets/client_secret.json', SCOPES)
+            # flow.redirect_uri= 'http://localhost:3000'
+            # authorization_url, state = flow.authorization_url()
             creds = flow.run_local_server()
         # Save the credentials for the next run
         with open(f'./user_auth/{userId}.pickle', 'wb') as token:
