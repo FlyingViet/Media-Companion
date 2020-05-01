@@ -13,19 +13,31 @@ body {
 @media all and (min-width: 480px) {
 
     .Login {
-      padding: 250px 0;
+      padding: 250px 0px;
       color: white;
-      font-family: fantasy;
+      outline: black;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
       font-size: xx-large ;
     }
 
-    
- 
+    .Login texty{
+      font: small;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      color: black;
+    }
+
+    .Login input{
+      size: 10px;
+
+      outline-width: 2pt;
+      outline-color: black;
+    }
 
     .Login button {
-      font-size: 20px;
-      padding: 5px 30px;
-      margin: 2px;
+      font-size: 10px;
+      size: 100px;
+      padding: 10px 50px;
+      margin: 10px;
       display: inline-block;
       transition-duration: 0.4s;
       background-color: rgb(0, 0, 0);
