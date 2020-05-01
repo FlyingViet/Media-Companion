@@ -58,7 +58,7 @@ export default class Search extends Component {
         switch(searchInput){
             case 'spotify':
                 result = await getSpotifyPlaylist(this.state.searchId);
-                await delay(3000);
+                await delay(5000);
                 break;
             case 'youtube':
                 //toCode
