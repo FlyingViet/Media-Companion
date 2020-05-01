@@ -1,23 +1,22 @@
 import React, { Component } from "react";
 import "./Login.css";
 
-import { MDBInput } from "mdbreact";
-
 
 export default class Search extends Component {
     render() {
         return(
             <center className="form-group">
-                <h1>Media Companion</h1>
+                
                 <div className="card">
                         <div className="card-block">
                             <form className="k-form">
+                                <h2>Media Companion</h2>
                                 <label className="k-form-field">
-                                    <input className="k-textbox" placeholder="Email" onChange={e => this.props.changeEmail(e)}/>
+                                    <input className="k-textbox" placeholder="Enter Email" onChange={e => this.props.changeEmail(e)}/>
                                 </label>
                                 <br/>
                                 <label className="k-form-field">
-                                    <input className="k-textbox" placeholder="Password" onChange={e => this.props.changePassword(e)} />
+                                    <input className="k-textbox" placeholder="Enter Password" onChange={e => this.props.changePassword(e)} />
                                 </label>
                             </form>
                         </div>

@@ -102,7 +102,6 @@ export default class Login2 extends Component {
         return (
             <center>
                 <h1>Welcome to Media Companion</h1>
-                <br/>
                 <button onClick={this.handleSearch}>Search</button>
                 <button onClick={this.handlePlaylist}>Playlist</button>
                 <button onClick={this.handleConvert}>Convert Playlist</button>
