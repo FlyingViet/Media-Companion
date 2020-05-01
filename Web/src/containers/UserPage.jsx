@@ -50,6 +50,11 @@ export default class Login2 extends Component {
         //TODO: add function call to authenticate
         this.setState({connected: true});
     }
+    youtubeAuth = async () => {
+        var url = await ytAuth(this.props.user.id);
+        console.log(url);
+        window.open(url);
+    }
     createComponent = () => {
         if(this.state.searchOpen){
             return (
@@ -94,7 +99,7 @@ export default class Login2 extends Component {
                 </Modal>
             )
         }else if(this.state.youtubeOpen){
-            ytAuth(this.props.user.id);
+            this.youtubeAuth();
         }
     }
 

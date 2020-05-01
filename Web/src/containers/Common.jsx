@@ -104,6 +104,7 @@ export async function updateDb(searchData){
 }
 
 export async function ytAuth(id){
+    var url = "";
     await fetch('/api/Youtube/Auth/', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -111,10 +112,13 @@ export async function ytAuth(id){
             id: id
         })
     }).then((res) => {
+        //console.log(res);
         return res.json();
     }).then((json) => {
-        console.log(json);
+        //console.log(json);
+        url = json;
     });
+    return url;
 }
 
 export async function ytCreate(playlistName, userId){

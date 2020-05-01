@@ -29,3 +29,7 @@ Youtube/secret/client_secret.json
 >>>>>>> Stashed changes
 
 Api/secrets/
+
+Api/secret/
+
+Api/__pycache__/

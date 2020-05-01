@@ -6,6 +6,11 @@ import spotipy.util as util
 import requests
 from flask_cors import CORS
 import yt
+import flask
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
+import googleapiclient.discovery
+import pickle
 
 app = Flask(__name__)
 CORS(app)
@@ -201,17 +206,72 @@ def show_playlist(tracks, results, i):
     return i
 
 ####################### YOUTUBE ######################################
+
+CLIENT_SECRETS_FILE = "secret/client_secret.json"
+
+# If modifying these scopes, delete the file token.pickle.
+SCOPES = ['https://www.googleapis.com/auth/youtube']
+
+API_SERVICE_NAME = 'youtube'
+API_VERSION = 'v3'
+
+
+app.secret_key = b'_5#1L"F4Q9zcmcxas]/'
+
+
 @app.route('/api/Youtube/Auth/', methods=['POST'])
 def ytAuth():
-    global youtube
-    db = Database()
+
+    if 'credentials' not in flask.session:
+        return flask.redirect('authorize')
+
+    credentials = google.oauth2.credentials.Credentials(
+        **flask.session['credentials'])
+
+    youtube = googleapiclient.discovery.build(
+        API_SERVICE_NAME, API_VERSION, credentials=credentials)
+
+    files = youtube.files().list().execute()
+
     payload = request.get_json()
-    userId = payload['id']
-    youtube = yt.auth(userId)
-    if youtube is not None:
-        db.set_auth(userId)
-    auth = db.get_user(userId)
-    return jsonify(auth)
+    flask.session['credentials'] = credentials_to_dict(credentials, payload['id'])
+
+    return jsonify(**files)
+
+    # db = Database()
+    # payload = request.get_json()
+    # userId = payload['id']
+    # youtube = yt.auth(userId)
+    # if youtube is not None:
+    #    db.set_auth(userId)
+    # auth = db.get_user(userId)
+    # return jsonify(auth)
+
+@app.route('/api/Youtube/Auth/authorize', methods=['GET'])
+def authorize():
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES)
+
+    flow.redirect_uri = 'http://localhost:3000'
+    authorization_url, state = flow.authorization_url()
+    flask.session['state'] = state
+
+    return jsonify(authorization_url)
+
+
+def credentials_to_dict(credentials, userId):
+    flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+        'secret/client_secret.json', SCOPES)
+    creds = flow.run_local_server()
+    with open(f'./userauth/{userId}.pickle', 'wb') as token:
+        pickle.dump(creds, token)
+
+    return {'token': credentials.token,
+            'refresh_token': credentials.refresh_token,
+            'token_uri': credentials.token_uri,
+            'client_id': credentials.client_id,
+            'client_secret': credentials.client_secret,
+            'scopes': credentials.scopes}
+
 
 @app.route('/api/Youtube/Playlist/Create/', methods=['POST'])
 def ytCreate():

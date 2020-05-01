@@ -17,8 +17,8 @@ def auth(userId):
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists(f'./user_auth/{userId}.pickle'):
-        with open(f'./user_auth/{userId}.pickle', 'rb') as token:
+    if os.path.exists(f'./userauth/{userId}.pickle'):
+        with open(f'./userauth/{userId}.pickle', 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -26,12 +26,12 @@ def auth(userId):
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'secrets/client_secret.json', SCOPES)
+                'secret/client_secret.json', SCOPES)
             # flow.redirect_uri= 'http://localhost:3000'
             # authorization_url, state = flow.authorization_url()
             creds = flow.run_local_server()
         # Save the credentials for the next run
-        with open(f'./user_auth/{userId}.pickle', 'wb') as token:
+        with open(f'./userauth/{userId}.pickle', 'wb') as token:
             pickle.dump(creds, token)
 
     youtube = build('youtube', 'v3', credentials=creds)
