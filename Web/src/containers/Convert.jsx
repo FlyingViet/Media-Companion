@@ -5,6 +5,10 @@ import _ from 'lodash';
 import Swal from 'sweetalert2';
 import {getSpotifyPlaylist, getSpotifySong, getSongsDb, ytCreate, ytInsert, ytAuth} from './Common';
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export default class Search extends Component {
     state = {
         fromSelectedOption: null,
@@ -54,6 +58,7 @@ export default class Search extends Component {
         switch(searchInput){
             case 'spotify':
                 result = await getSpotifyPlaylist(this.state.searchId);
+                await delay(3000);
                 break;
             case 'youtube':
                 //toCode
