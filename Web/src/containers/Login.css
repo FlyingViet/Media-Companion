@@ -1,46 +1,36 @@
 
 body {
-  background-image: url("https://soundwave.com/img/hero11.jpg");
+  background-image: url("https://assets.rocketstock.com/uploads/Smoke-Tutorial-Featured-Image-1000x576.jpg");
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+
 }
 
 
 @media all and (min-width: 480px) {
 
     .Login {
-      padding: 100px 0;
+      padding: 250px 0;
+      color: white;
+      font-family: fantasy;
+      font-size: xx-large ;
     }
 
-    .Login input {
-      margin: 0 ;
-      max-width: 320px;
-      font-weight: unset;
-      font-size: 20px;
-      color: black;
-      display: inline-block;
-      text-align: center;
-    }
-    .Login label {
-      margin: 0 ;
-      max-width: 320px;
-      font-weight: unset;
-      font-size: 20px;
-      color: black;
-      display: inline-block;
-      text-align: center;
-      width: 100px;
-    }
-
-    .Login h1 {
-      margin: 0 auto;
-      max-width: 320px;
-      color: black;
-    }
+    
+ 
 
     .Login button {
-      font-size: 16px;
+      font-size: 20px;
       padding: 5px 30px;
       margin: 2px;
       display: inline-block;
+      transition-duration: 0.4s;
+      background-color: rgb(0, 0, 0);
+      color: whitesmoke;
     }
+
     
   }
