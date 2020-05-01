@@ -3,7 +3,7 @@ import './Table.css';
 import Select from 'react-select';
 import _ from 'lodash';
 import Swal from 'sweetalert2';
-import {getSpotifyPlaylist, getSpotifySong, getSongsDb} from './Common';
+import {getSpotifyPlaylist, getSpotifySong, getSongsDb, ytCreate, ytInsert, ytAuth} from './Common';
 
 export default class Search extends Component {
     state = {
@@ -18,7 +18,8 @@ export default class Search extends Component {
         fromJsonData: [],
         toJsonData: [],
         searchResults: [],
-        playlistName: ''
+        playlistId: '',
+        userId: 0
     };
 
     handleOnChange = event => {
@@ -46,6 +47,8 @@ export default class Search extends Component {
               });
               return;
         }
+        var userId = this.props.userId;
+        this.setState({userId: userId});
         var searchInput = this.state.fromSelectedOption.value;
         var result = [];
         switch(searchInput){
@@ -53,56 +56,88 @@ export default class Search extends Component {
                 result = await getSpotifyPlaylist(this.state.searchId);
                 break;
             case 'youtube':
-                result = await getSpotifyPlaylist(this.state.searchId);
                 //toCode
                 break;
             default:
                 console.log("Error, cannot get search from option");
         }
         if(!_.isEmpty(result))
-            var playlistName = result[0].name;
+            var playlistId = result[0].name;
             result = result.splice(1);
-            this.setState({fromJsonData: result, playlistName: playlistName});
+            this.setState({fromJsonData: result, playlistId: playlistId});
         console.log(this.state.fromJsonData);
         await this.convertPlaylist();
         console.log(this.state.toJsonData);
+    }
+
+    createYtPlaylist = async (playlistName, userId) => {
+        var item = ytCreate(playlistName, userId);
+        return item;
+    }
+
+    insertYtSong = async (playlistId, songName, userId) => {
+        var item = ytInsert(playlistId, songName, userId);
+        return item;
     }
 
     convertPlaylist = async () => {
         var fromList = this.state.fromJsonData;
         var outList = [];
         var convertOutput = this.state.toSelectedOption.value;
-        var dbSongs = await getSongsDb();
+        //var dbSongs = await getSongsDb();
+        var playlistId = '';
+        switch(convertOutput){
+            case 'spotify':
+                break;
+            case 'youtube':
+                playlistId = await this.createYtPlaylist(this.state.playlistId, this.state.userId);       
+                break;
+            default:
+                console.log("Error, cannot get search from option");
+        }
         _.map(fromList, async (s) => {
-            var format = {SongName: s.song, SongArtist: s.artist};
-            if(_.some(dbSongs, format)){
-                var item = _.filter(dbSongs, format)[0];
-                var transform = {song: item.SongName, artist: item.SongArtist, url: item.SpotifyUrl, id: item.SpotifyID}
-                outList.push(transform);
-            }else{
-                var search = `${s.song} - ${s.artist}`;
-                /* TODO: Create and Insert a new Playlist */
-                var result = [];
+            //var format = {SongName: s.song, SongArtist: s.artist};
+            // if(_.some(dbSongs, format)){
+            //     var item = _.filter(dbSongs, format)[0];
+            //     var transform = {song: item.SongName, artist: item.SongArtist, url: item.SpotifyUrl, id: item.SpotifyID}
+            //     outList.push(transform);
+            // }else{
+            //     var search = `${s.song} - ${s.artist}`;
+            //     /* TODO: Create and Insert a new Playlist */
+            //     var result = [];
+            //     switch(convertOutput){
+            //         case 'spotify':
+            //             break;
+            //         case 'youtube':
+            //             //toCode
+            //             result = await this.createYtPlaylist(this.state.playlistId);
+            //             var songTitle = await this.insertYtSong(this.state.playlistId, search);
+            //             break;
+            //         default:
+            //             console.log("Error, cannot get search from option");
+            //     }
+            //     this.setState({searchResults: result});
+            //     if(!_.isEmpty(this.state.searchResults)){
+            //         outList.push(this.state.searchResults[0]);
+            //     }
+            // }
+            var search = `${s.song} - ${s.artist}`;
                 switch(convertOutput){
                     case 'spotify':
-                        result = await getSpotifySong(search);
                         break;
                     case 'youtube':
-                        //toCode
-                        result = await getSpotifySong(search);
+                        console.log(playlistId);
+                        var songTitle = await this.insertYtSong(playlistId, search, this.state.userId);
+                        //await this.insertYtSong("testId", search, this.state.userId);
+                        console.log(songTitle);
                         break;
                     default:
                         console.log("Error, cannot get search from option");
                 }
-                this.setState({searchResults: result});
-                if(!_.isEmpty(this.state.searchResults)){
-                    outList.push(this.state.searchResults[0]);
-                }
-            }
         });
-        this.setState({toJsonData: outList});
     }
 
+    
     render() {
 
         return (

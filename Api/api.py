@@ -213,6 +213,29 @@ def ytAuth():
     auth = db.get_user(userId)
     return jsonify(auth)
 
+@app.route('/api/Youtube/Playlist/Create/', methods=['POST'])
+def ytCreate():
+    global youtube
+    payload = request.get_json()
+    playlistName = payload['playlistName']
+    userId = payload['userId']
+    youtube =  yt.auth(userId)
+    playlistId = yt.create_user_playlist(playlistName, youtube)
+    return jsonify(playlistId)
+    # return jsonify("test")
+
+@app.route('/api/Youtube/Playlist/Insert/', methods=['POST'])
+def ytInsert():
+    global youtube
+    payload = request.get_json()
+    print(payload)
+    playlistId = payload['playlistId']
+    songName = payload['songName']
+    userId = payload['userId']
+    youtube =  yt.auth(userId)
+    inserted = yt.insert_video_user_playlist(playlistId, songName, youtube)
+    return jsonify(inserted)
+    # return jsonify("test")
 
 if __name__ == '__main__':
     app.run(debug=True)

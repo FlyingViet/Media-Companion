@@ -90,7 +90,7 @@ export default class Login2 extends Component {
                     style={customStyles}
                     ariaHideApp={false}
                 > 
-                    <Convert/>
+                    <Convert userId={this.props.user.id}/>
                 </Modal>
             )
         }else if(this.state.youtubeOpen){

@@ -116,3 +116,43 @@ export async function ytAuth(id){
         console.log(json);
     });
 }
+
+export async function ytCreate(playlistName, userId){
+    var playlistId = '';
+    await fetch('/api/Youtube/Playlist/Create/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            playlistName: playlistName,
+            userId: userId
+        })
+    }).then((res) => {
+        return res.json();
+    }).then((json) => {
+        console.log(json);
+        playlistId = json;
+    });
+    return playlistId;
+}
+
+export async function ytInsert(playlistId, songName, userId){
+    var songId = 0;
+    console.log(playlistId);
+    console.log(songName);
+    console.log(userId);
+    await fetch('/api/Youtube/Playlist/Insert/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            playlistId: playlistId,
+            songName: songName,
+            userId: userId
+        })
+    }).then((res) => {
+        return res.json();
+    }).then((json) => {
+        console.log(json);
+        songId = json.inserted;
+    });
+    return songId;
+}

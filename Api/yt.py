@@ -8,7 +8,6 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/youtube']
 
-
 def auth(userId):
     """Shows basic usage of the People API.
     Prints the name of the first 10 connections.
@@ -71,7 +70,8 @@ def create_user_playlist(pl: str, youtube):
         }
     )
     create_play_exe = create_play.execute()
-    print(create_play_exe)    
+    print(create_play_exe['id'])
+    return create_play_exe['id']
 
 def get_video_id(v_name: str, youtube):
     s_video = youtube.search().list(
@@ -84,7 +84,7 @@ def get_video_id(v_name: str, youtube):
     return vid
 
 def insert_video_user_playlist(pl_id: str, v_name: str, youtube):
-    vid = get_video_id(v_name=v_name)
+    vid = get_video_id(v_name=v_name, youtube=youtube)
 
     up = youtube.playlistItems().insert(
         part='snippet',
@@ -99,10 +99,10 @@ def insert_video_user_playlist(pl_id: str, v_name: str, youtube):
         }
     )
     up_exe = up.execute()
-    print(up_exe)    
+    return up_exe['snippet']['title']
 
 def delete_video_user_playlist(pl_id: str, v_name: str, youtube):
-    vid = get_video_id(v_name=v_name)
+    vid = get_video_id(v_name=v_name, youtube=youtube)
 
     vid_delete = youtube.playlistItems().list(
         part="id",
